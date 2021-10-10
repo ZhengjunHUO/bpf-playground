@@ -13,4 +13,4 @@ load: get_map_from_bpffs.c
 build: save load
 
 clean:
-	rm -f pinmap getmap
+	rm -f pinmap getmap /sys/fs/bpf/my_first_stack

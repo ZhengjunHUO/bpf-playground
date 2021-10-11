@@ -11,10 +11,10 @@ import (
 
 const source string = `
 #include <uapi/linux/ptrace.h>
-int on_sys_execve(struct pt_regs *ctx) {
+int pre_sys_execve(struct pt_regs *ctx) {
   char comm[16];
   bpf_get_current_comm(&comm, sizeof(comm));
-  bpf_trace_printk("Executing program [%s]\\n", comm);
+  bpf_trace_printk("Executing program [%s]\n", comm);
   return 0;
 }
 `
@@ -23,9 +23,9 @@ func main() {
 	defer m.Close()
 
 	// load program, return a fd
-	sysExecve, err := m.LoadKprobe("on_sys_execve")
+	sysExecve, err := m.LoadKprobe("pre_sys_execve")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to load on_sys_execve: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Failed to load pre_sys_execve: %s\n", err)
 		os.Exit(1)
 	}
 
@@ -36,7 +36,7 @@ func main() {
 	// maxActive use the default value
 	err = m.AttachKprobe(syscallName, sysExecve, -1)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to attach on_sys_execve: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Failed to attach pre_sys_execve: %s\n", err)
 		os.Exit(1)
 	}
 

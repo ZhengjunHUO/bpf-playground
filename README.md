@@ -2,6 +2,7 @@
 
 ## Environment:
   - Fedora release 34 -- Linux 5.11.12-300.fc34.x86_64
+  - Go version go1.17.2 linux/amd64
 
 ## Prerequisites:
 ```bash

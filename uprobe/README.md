@@ -11,12 +11,12 @@ go run uretprobe.go
 ```bash
 nm helloworld | grep <PATTERN>
 ```
+- To see what happened when the program is running
+```bash
+cat /sys/kernel/debug/tracing/trace_pipe
+```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uretprobe.go's example output
 ```
       helloworld-4722    [000] d...  8517.366436: bpf_trace_printk: [PID: 4722] Execute helloworld at 315537958...
       helloworld-4722    [000] d...  8517.370604: bpf_trace_printk: [PID: 4722] helloworld returned, cost 4175829 ns!
-```
-- To see what happened when the program is running
-```bash
-cat /sys/kernel/debug/tracing/trace_pipe
 ```

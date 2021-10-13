@@ -1,4 +1,4 @@
-# Learn BPF Programming
+# Learn eBPF Programming
 
 ## Environment:
   - Fedora release 34 -- Linux 5.11.12-300.fc34.x86_64

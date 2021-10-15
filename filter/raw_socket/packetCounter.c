@@ -26,6 +26,7 @@ struct bpf_map_def SEC("maps") packetcount = {
     .key_size = sizeof(int),
     .value_size = sizeof(int),
     .max_entries = 64,
+    .map_flags = 0,
 };
 
 SEC("socket")

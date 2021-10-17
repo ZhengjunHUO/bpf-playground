@@ -1,5 +1,4 @@
 # How to
-- Use fedora 32 - 5.11.22-100.fc32.x86_64
 - learn from the book Linux Observability with BPF Chapter 6
 ### Compile the BPF Program and load program
 ```bash

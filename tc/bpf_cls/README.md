@@ -6,7 +6,7 @@ make
 ```
 ### Load bpf program to netif 
 ```bash
-./attach.c eth0
+./attach.sh eth0
 ```
 ### Read the output
 ```bash
@@ -24,9 +24,9 @@ Running! Hang up with ^C!
 ```bash
 curl ifconfig.co
 ```
-### Detach bpf program to netif 
+### Detach bpf program from netif
 ```bash
-./detach.c eth0
+./detach.sh eth0
 ```
 ### Clean up
 ```bash

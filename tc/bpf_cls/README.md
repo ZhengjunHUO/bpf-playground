@@ -32,3 +32,8 @@ curl ifconfig.co
 ```bash
 make clean
 ```
+## If bpf program is attached to loopback interface, bring up a http server locally
+```bash
+python3 -m http.server &
+curl 127.0.0.1:8000
+```

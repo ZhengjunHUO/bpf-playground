@@ -12,3 +12,7 @@ make
 ```bash
 ping 127.0.0.1
 ```
+### Clean up
+```bash
+make clean
+```

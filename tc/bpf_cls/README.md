@@ -8,6 +8,14 @@ make
 ```bash
 ./attach.sh eth0
 ```
+### Check change in qdisc list
+```bash
+tc qdisc ls
+qdisc noqueue 0: dev lo root refcnt 2 
+qdisc fq_codel 0: dev eth0 root refcnt 2 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64 
+++ qdisc ingress ffff: dev eth0 parent ffff:fff1 ---------------- 
+qdisc fq_codel 0: dev eth1 root refcnt 2 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64 
+```
 ### Read the output
 ```bash
 cat /sys/kernel/debug/tracing/trace_pipe

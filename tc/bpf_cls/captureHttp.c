@@ -68,7 +68,7 @@ static inline int mycls(struct __sk_buff *skb) {
   __u32 ip_hdlen = ip_hd->ihl << 2;
 
   // avoid verifier's complain
-  if (ip_hd + 20 > data_end) {
+  if ((void *)ip_hd + sizeof(*ip_hd) > data_end) {
     return TC_ACT_OK;
   }
 
@@ -87,7 +87,7 @@ static inline int mycls(struct __sk_buff *skb) {
   __u32 tcp_hdlen = tcp_hd->doff << 2;
 
   // avoid verifier's complain
-  if (tcp_hd + 20 > data_end) {
+  if ((void *)tcp_hd + sizeof(*tcp_hd)> data_end) {
     return TC_ACT_OK;
   }
 

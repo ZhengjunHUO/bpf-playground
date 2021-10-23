@@ -40,3 +40,12 @@ PORT     STATE    SERVICE
 ```bash
 make clean
 ```
+### Compatibility
+- possible to attach the compiled(under v5.11) xdp program to a host's interface running under lower kernel version with 
+```
+CONFIG_XDP_SOCKETS=y
+```
+- Tested on a Debian 4.19
+
+
+

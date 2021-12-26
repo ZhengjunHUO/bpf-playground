@@ -18,3 +18,32 @@ if bpffs is not mounted:
 ```bash
 mount bpffs /sys/fs/bpf -t bpf
 ```
+
+# Summary
+## Networking
+- [Socket Filter Programs](https://github.com/ZhengjunHUO/bpflearn/tree/main/filter/raw_socket)
+attach to a raw socket, observability purposes only; SEC("socket") 
+
+- [XDP Programs](https://github.com/ZhengjunHUO/bpflearn/tree/main/xdp/droptcp)
+executed on network packet as early as possible; mitigate DDoS attack
+
+- Cgroup Socket Programs
+attach BPF logic to cgroups
+useful in container environments where groups of processes are constrained by cgroups and where you can apply the same policies to all of them without having to identify each one independently
+usecase: [Cilium](https://github.com/cilium/cilium)
+
+- [Traffic classifier programs](https://github.com/ZhengjunHUO/bpflearn/tree/main/tc/bpf_cls)
+
+## Tracing
+- [Kprobe Programs](https://github.com/ZhengjunHUO/bpflearn/tree/main/kprobe)
+attach dynamically to call points in the kernel
+bpf.GetSyscallFnName("execve")
+
+- [Uprobe Programs](https://github.com/ZhengjunHUO/bpflearn/tree/main/uprobe)
+dynamic access to programs running in user-space
+
+- [Tracepoint Programs](https://github.com/ZhengjunHUO/bpflearn/tree/main/tracepoint)
+attach to the tracepoint handler provided by the kernel; subsystem:tracepointName
+less flexible than kprobes (need to be defined by the kernel beforehand)
+
+- Perf Event Programs

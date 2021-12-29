@@ -7,3 +7,6 @@ docker run --rm --user "0:0" -v $MOUNT_DIR:/kprobe -w /kprobe "quay.io/cilium/eb
 # Load & Run
 go run ./kprobe/
 ```
+
+## Mind map
+![mind map](./run_bpf_prgram.png)

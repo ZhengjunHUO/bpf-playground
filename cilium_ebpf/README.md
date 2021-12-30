@@ -1,4 +1,5 @@
 ## Rewrite [kprobe program](https://github.com/ZhengjunHUO/bpflearn/blob/main/kprobe/kprobe.go) with [cilium/ebpf](https://github.com/cilium/ebpf)
+### Assume current working directory is in this folder
 ```bash
 # Precompile bpf program in container
 export MOUNT_DIR=$(pwd)

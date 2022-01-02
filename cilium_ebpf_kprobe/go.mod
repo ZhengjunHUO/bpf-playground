@@ -1,4 +1,4 @@
-module github.com/ZhengjunHUO/bpflearn/cilium_ebpf
+module github.com/ZhengjunHUO/bpflearn/cilium_ebpf_kprobe
 
 go 1.17
 

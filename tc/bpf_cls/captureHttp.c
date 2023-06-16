@@ -34,7 +34,7 @@ static int (*bpf_trace_printk)(const char *fmt, int fmt_size, ...) = (void *)BPF
 
 
 SEC("classifier")
-static inline int mycls(struct __sk_buff *skb) {
+int mycls(struct __sk_buff *skb) {
   // Get packet's begin and end
   void *data = (void *)(long)skb->data;
   void *data_end = (void *)(long)skb->data_end;

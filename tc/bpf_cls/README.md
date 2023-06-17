@@ -3,6 +3,9 @@
 ### Compile the BPF Program
 ```bash
 make
+
+# check object
+objdump -h captureHttp.o
 ```
 ### Load bpf program to netif 
 ```bash
@@ -44,4 +47,11 @@ make clean
 ```bash
 python3 -m http.server &
 curl 127.0.0.1:8000
+```
+
+# Explore
+```
+# Add delay to packet
+$ sudo tc qdisc add dev enp0s3 root netem delay 100ms
+$ sudo tc qdisc del dev enp0s3 root
 ```

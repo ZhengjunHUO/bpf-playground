@@ -47,3 +47,9 @@ attach to the tracepoint handler provided by the kernel; subsystem:tracepointNam
 less flexible than kprobes (need to be defined by the kernel beforehand)
 
 - Perf Event Programs
+
+# Debug
+```sh
+# check bpf map content
+$ sudo bpftool map dump id <MAP_ID>
+```

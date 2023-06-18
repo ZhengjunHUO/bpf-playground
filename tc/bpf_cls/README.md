@@ -54,4 +54,11 @@ curl 127.0.0.1:8000
 # Add delay to packet
 $ sudo tc qdisc add dev enp0s3 root netem delay 100ms
 $ sudo tc qdisc del dev enp0s3 root
+
+# BPF direct action
+$ sudo tc qdisc add dev enp0s3 clsact
+$ sudo tc filter add dev enp0s3 ingress|egress bpf da obj foo.o [sec bar]
+$ tc filter show dev enp0s3 ingress|egress
+$ sudo tc filter del dev enp0s3 ingress|egress
+$ sudo tc qdisc delete dev enp0s3 clsact
 ```

@@ -34,7 +34,7 @@ fn main() -> Result<()> {
     let open = builder.open()?;
     let mut skel = open.load()?;
     let progs = skel.progs();
-    let ifidx = nix::net::if_::if_nametoindex("veth3f1f03a")? as i32;
+    let ifidx = nix::net::if_::if_nametoindex("vetha86e559")? as i32;
 
     let mut tc_builder = TcHookBuilder::new();
     tc_builder

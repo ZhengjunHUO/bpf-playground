@@ -1,5 +1,6 @@
 #include <linux/bpf.h>
 #include <linux/pkt_cls.h>
+#include <linux/if_ether.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
@@ -25,7 +26,7 @@ struct {
 } egress_blacklist SEC(".maps");
 
 /* apply saved rules to ingress/egress packets, drop the packet if match */
-static inline int filter_packet(struct __sk_buff *skb) {
+static inline int filter_packet(struct __sk_buff *skb, bool isTc) {
     void *data = (void *)(long)skb->data;
     void *data_end = (void *)(long)skb->data_end;
 
@@ -35,9 +36,18 @@ static inline int filter_packet(struct __sk_buff *skb) {
     }
 
     struct iphdr *iphd = data;
+    if (isTc) {
+        struct ethhdr *ethhd = (struct ethhdr*)(void*)(long)skb->data;
+        __u32 eth_len = sizeof(struct ethhdr);
+        if ((void *)ethhd + eth_len > data_end) {
+            return 1;
+        }
+        iphd = data + eth_len;
+    }
+
     __u32 iphdr_len = sizeof(struct iphdr);
     // avoid verifier's complain
-    if (data + iphdr_len > data_end)
+    if ((void *)iphd + iphdr_len > data_end)
         return 1;
 
     if (iphd->protocol == IPPROTO_TCP) {
@@ -58,13 +68,17 @@ static inline int filter_packet(struct __sk_buff *skb) {
 
     bool isBannedL3;
     if (isIngress) {
-	__u32 src_addr = bpf_ntohl(iphd->saddr);
-        bpf_printk("Ingress from %lu", src_addr);
-        isBannedL3 = bpf_map_lookup_elem(&ingress_blacklist, &src_addr);
+        bpf_printk("Ingress %lu <- %lu", iphd->daddr, iphd->saddr);
+        __u32 src_addr = bpf_ntohl(iphd->saddr);
+        __u32 dst_addr = bpf_ntohl(iphd->daddr);
+        bpf_printk("Ingress stdz %lu <- %lu", dst_addr, src_addr);
+        isBannedL3 = bpf_map_lookup_elem(&ingress_blacklist, &iphd->saddr);
     } else {
-	__u32 dst_addr = bpf_ntohl(iphd->daddr);
-        bpf_printk("Egress to %lu", dst_addr);
-        isBannedL3 = bpf_map_lookup_elem(&egress_blacklist, &dst_addr);
+        bpf_printk("Egress %lu -> %lu", iphd->saddr, iphd->daddr);
+        __u32 src_addr = bpf_ntohl(iphd->saddr);
+        __u32 dst_addr = bpf_ntohl(iphd->daddr);
+        bpf_printk("Egress %lu -> %lu", src_addr, dst_addr);
+        isBannedL3 = bpf_map_lookup_elem(&egress_blacklist, &iphd->daddr);
     }
 
     __u32 bitmap = (isBannedL3 << 1) | isIngress;
@@ -81,7 +95,7 @@ static inline int filter_packet(struct __sk_buff *skb) {
 
 SEC("tc")
 int tc_filter(struct __sk_buff *skb) {
-    if (filter_packet(skb) == 0) {
+    if (filter_packet(skb, true) == 0) {
         bpf_printk("Should be dropped");
         return TC_ACT_SHOT;
     }

@@ -52,4 +52,6 @@ less flexible than kprobes (need to be defined by the kernel beforehand)
 ```sh
 # check bpf map content
 $ sudo bpftool map dump id <MAP_ID>
+# look inside compiled eBPF program
+$ llvm-objdump -S <EBPF_OBJ>
 ```

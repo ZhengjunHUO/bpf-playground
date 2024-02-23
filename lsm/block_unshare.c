@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
     libbpf_set_print(libbpf_print_fn);
 
-    int err;
+    int err = 0;
 
     struct block_unshare_bpf *prog;
     prog = block_unshare_bpf__open_and_load();

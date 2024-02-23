@@ -64,3 +64,12 @@ $ llvm-objdump -S <EBPF_OBJ>
 # follow debug info (bpf_printk in bpf program)
 $ sudo cat /sys/kernel/tracing/trace_pipe
 ```
+
+# Memo
+```sh
+# Grub current kernel's BTF
+$ sudo bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
+
+# Generate scaffolding code
+$ sudo bpftool gen skeleton foo.bpf.o > foo.skel.h
+```

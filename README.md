@@ -70,6 +70,10 @@ $ sudo cat /sys/kernel/tracing/trace_pipe
 # Grub current kernel's BTF
 $ sudo bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
 
+# shows data structure layouts
+$ sudo apt install dwarves
+$ pahole __sk_buff
+
 # Generate scaffolding code
 $ sudo bpftool gen skeleton foo.bpf.o > foo.skel.h
 ```

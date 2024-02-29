@@ -1,35 +1,36 @@
 #include <unistd.h>
+
 #include "connect_tcp.skel.h"
 
-static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
-{
+static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
+                           va_list args) {
     return vfprintf(stderr, format, args);
 }
 
 int main(int argc, char *argv[]) {
-  libbpf_set_print(libbpf_print_fn);
+    libbpf_set_print(libbpf_print_fn);
 
-  int err = 0;
+    int err = 0;
 
-  struct connect_tcp_bpf *obj = connect_tcp_bpf__open_and_load();
-  if (!obj) {
-    fprintf(stderr, "Error loading BPF obj");
-    goto destruction;
-  }
+    struct connect_tcp_bpf *obj = connect_tcp_bpf__open_and_load();
+    if (!obj) {
+        fprintf(stderr, "Error loading BPF obj");
+        goto destruction;
+    }
 
-  err = connect_tcp_bpf__attach(obj);
-  if (err) {
-    fprintf(stderr, "Error attaching BPF obj");
-    goto destruction;
-  }
+    err = connect_tcp_bpf__attach(obj);
+    if (err) {
+        fprintf(stderr, "Error attaching BPF obj");
+        goto destruction;
+    }
 
-  printf("BPF program injected !\n");
+    printf("BPF program injected !\n");
 
-  while (true) {
-    sleep(1);
-  }
+    while (true) {
+        sleep(1);
+    }
 
 destruction:
-  connect_tcp_bpf__destroy(obj);
-  return err;
+    connect_tcp_bpf__destroy(obj);
+    return err;
 }

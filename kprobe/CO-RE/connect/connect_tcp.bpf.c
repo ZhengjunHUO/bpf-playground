@@ -46,8 +46,9 @@ struct sock {
 } __attribute__((preserve_access_index));
 
 SEC("kprobe/tcp_connect")
-int tcp_conn_prob(struct pt_regs *regs) {
-    struct sock *socket = (struct sock *)PT_REGS_PARM1_CORE(regs);
+int BPF_KPROBE(tcp_conn_prob, struct sock *socket) {
+//int tcp_conn_prob(struct pt_regs *regs) {
+    //struct sock *socket = (struct sock *)PT_REGS_PARM1_CORE(regs);
     __u16 family = BPF_CORE_READ(socket, __sk_common.skc_family);
 
     if (family == AF_INET) {

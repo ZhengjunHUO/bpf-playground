@@ -1,29 +1,54 @@
-COMPILER = clang
+COMPILER ?= clang
+STRIP := llvm-strip
+BPFTOOL := bpftool
+PROG_NAME ?= connect_tcp
+ARCH ?= $(shell uname -m | sed 's/x86_64/x86/' \
+                         | sed 's/arm.*/arm/' \
+                         | sed 's/aarch64/arm64/' \
+                         | sed 's/ppc64le/powerpc/' \
+                         | sed 's/mips.*/mips/' \
+                         | sed 's/riscv64/riscv/' \
+                         | sed 's/loongarch64/loongarch/')
+MACROS := -D__TARGET_ARCH_$(ARCH) -D__KERNEL__
+CFLAGS := -Wall -g
+RMF := rm -f
+
+ifeq ($(V),1)
+	Q =
+else
+	Q = @
+endif
+
+ifeq ($(S),1)
+	SFLAGS = -lelf -lz -static
+else
+	SFLAGS =
+endif
 
 .DEFAULT_GOAL := build
 
-connect_tcp.bpf.o: connect_tcp.bpf.c
-	@$(COMPILER) -Wall -O2 -target bpf -g -c -D__TARGET_ARCH_x86 -D__KERNEL__ $^ -o $@
-	@llvm-strip -g $@
+$(PROG_NAME).bpf.o: $(PROG_NAME).bpf.c
+	$(Q)$(COMPILER) $(CFLAGS) -O2 -target bpf -c $(MACROS) $^ -o $@
+	$(Q)$(STRIP) -g $@
 
-connect_tcp.skel.h: connect_tcp.bpf.o
-	@sudo bpftool gen skeleton $^ > $@
+$(PROG_NAME).skel.h: $(PROG_NAME).bpf.o
+	$(Q)sudo $(BPFTOOL) gen skeleton $^ > $@
 
-connect_tcp.o: connect_tcp.c connect_tcp.skel.h
-	@$(COMPILER) -Wall -g -c $< -o $@
+$(PROG_NAME).o: $(PROG_NAME).c $(PROG_NAME).skel.h
+	$(Q)$(COMPILER) $(CFLAGS) -c $< -o $@
 
-connect_tcp: connect_tcp.o 
-	@$(COMPILER) -g $< -lbpf -o $@
+$(PROG_NAME): $(PROG_NAME).o
+	$(Q)$(COMPILER) $< -lbpf $(SFLAGS) -o $@
 
 .PHONY: build
-build: connect_tcp
+build: $(PROG_NAME)
 
 .PHONY: exec
 exec: build
-	@sudo ./connect_tcp
+	$(Q)sudo ./$(PROG_NAME)
 
 .PHONY: clean
 clean:
-	@rm -f *.o
-	@rm -f connect_tcp.skel.h
-	@rm -f connect_tcp
+	$(Q)$(RMF) *.o
+	$(Q)$(RMF) $(PROG_NAME).skel.h
+	$(Q)$(RMF) $(PROG_NAME)

@@ -1,4 +1,5 @@
-#include "vmlinux.h"
+#include <linux/types.h>
+
 #include <bpf/bpf_core_read.h>
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
@@ -9,10 +10,30 @@
 #define CAP_TO_MASK(x) (1U << ((x)&31)) /* mask for indexed __u32 */
 #define CLONE_NEWUSER 0x10000000        /* New user namespace */
 
+typedef struct kernel_cap_struct {
+    __u32 cap[2];
+} __attribute__((preserve_access_index)) kernel_cap_t;
+
+struct cred {
+    kernel_cap_t cap_effective;
+} __attribute__((preserve_access_index));
+
+struct task_struct {
+    unsigned int flags;
+    const struct cred *cred;
+} __attribute__((preserve_access_index));
+
+struct pt_regs {
+    long unsigned int di;
+    long unsigned int orig_ax;
+} __attribute__((preserve_access_index));
+
+typedef unsigned int gfp_t;
+
 SEC("lsm/cred_prepare")
 int BPF_PROG(cred_prepare_handler, struct cred *new, const struct cred *old,
              gfp_t gfp, int ret) {
-    u64 pid = bpf_get_current_pid_tgid();
+    __u32 pid = bpf_get_current_pid_tgid() >> 32;
     bpf_printk("[PID: %d] Enter ebpf program", pid);
 
     if (ret) {

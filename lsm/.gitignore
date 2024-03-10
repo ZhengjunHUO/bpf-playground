@@ -1,3 +1,4 @@
 **/*.o
 **/*.skel.h
 block_unshare
+block_nice

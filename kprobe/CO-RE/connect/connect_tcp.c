@@ -1,6 +1,10 @@
+#include <signal.h>
 #include <unistd.h>
 
 #include "connect_tcp.skel.h"
+
+static volatile bool running = true;
+static void intr_handler(int signal) { running = false; }
 
 static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
                            va_list args) {
@@ -26,9 +30,13 @@ int main(int argc, char *argv[]) {
 
     printf("BPF program injected !\n");
 
-    while (true) {
+    signal(SIGINT, intr_handler);
+    signal(SIGTERM, intr_handler);
+
+    while (running) {
         sleep(1);
     }
+    printf("Ctrl-c captured, quit ...\n");
 
 destruction:
     connect_tcp_bpf__destroy(obj);

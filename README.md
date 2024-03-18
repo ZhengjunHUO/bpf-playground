@@ -77,3 +77,9 @@ $ pahole __sk_buff
 # Generate scaffolding code
 $ sudo bpftool gen skeleton foo.bpf.o > foo.skel.h
 ```
+
+# CO-RE
+- [lsm/nice](https://github.com/ZhengjunHUO/bpf-playground/tree/main/lsm/nice)
+- [lsm/unshare](https://github.com/ZhengjunHUO/bpf-playground/tree/main/lsm/unshare)
+- [kprobe](https://github.com/ZhengjunHUO/bpf-playground/tree/main/kprobe/CO-RE/connect)
+- [tracepoint](https://github.com/ZhengjunHUO/bpf-playground/tree/main/tracepoint/CO-RE)

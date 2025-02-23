@@ -67,6 +67,8 @@ $ sudo cat /sys/kernel/tracing/trace_pipe
 
 # Memo
 ```sh
+$ sudo apt install -y linux-tools-common
+
 # Grub current kernel's BTF
 $ sudo bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
 
@@ -76,6 +78,31 @@ $ pahole __sk_buff
 
 # Generate scaffolding code
 $ sudo bpftool gen skeleton foo.bpf.o > foo.skel.h
+
+# About perf probe
+# Error 1: Failed to find the path for the kernel: No such file or directory
+# Error 2: Failed to find source file path
+
+# Require debugging symbols or kernel headers
+$ sudo apt install ubuntu-dbgsym-keyring
+$ echo "deb http://ddebs.ubuntu.com $(lsb_release -cs) main restricted universe multiverse
+deb http://ddebs.ubuntu.com $(lsb_release -cs)-updates main restricted universe multiverse
+deb http://ddebs.ubuntu.com $(lsb_release -cs)-proposed main restricted universe multiverse" | \
+sudo tee -a /etc/apt/sources.list.d/ddebs.list
+$ sudo apt-get update
+$ sudo apt install linux-tools-$(uname -r) linux-headers-$(uname -r) linux-image-$(uname -r)-dbgsym
+
+# Require kernel source code
+$ wget http://archive.ubuntu.com/ubuntu/pool/main/l/linux/linux-source-6.8.0_6.8.0-52.53_all.deb
+$ sudo dpkg -i linux-source-6.8.0_6.8.0-52.53_all.deb
+$ cd /usr/src/linux-source-6.8.0/
+$ sudo bunzip2 linux-source-6.8.0.tar.bz2
+$ sudo tar -xvf linux-source-6.8.0.tar
+# Do some cleanup
+$ sudo mv linux-source-6.8.0/ /usr/src/linux-source-6.8.0/
+
+$ perf probe -s /usr/src/linux-source-6.8.0/ -L tcp_connect
+
 ```
 
 # CO-RE
